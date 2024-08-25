@@ -4,12 +4,9 @@ import base64
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-import subprocess
 import tempfile
 
 ### WORKING CODE #######
-
-# st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.title('NBA Player Stats Explorer')
 
@@ -130,6 +127,24 @@ if st.button('Intercorrelation Heatmap'):
         ax = sns.heatmap(corr, mask=mask, vmax=1, square=True, annot=True, fmt=".2f", cmap='coolwarm')
     st.pyplot()
 
+# Function to calculate KPIs (from mapreduce_job.py)
+def calculate_kpis(df):
+    kpis = {}
+    
+    # Ensure these columns exist in the DataFrame
+    if 'PER' in df.columns:
+        kpis['PER'] = df['PER'].mean()
+    if 'TS%' in df.columns:
+        kpis['TS%'] = df['TS%'].mean()
+    if 'eFG%' in df.columns:
+        kpis['eFG%'] = df['eFG%'].mean()
+    if 'AST' in df.columns and 'TOV' in df.columns:
+        kpis['AST/TO'] = (df['AST'] / df['TOV']).mean()
+    if 'USG%' in df.columns:
+        kpis['USG%'] = df['USG%'].mean()
+    
+    return pd.DataFrame([kpis])
+
 if st.button('Run MapReduce Job'):
     st.header('MapReduce Results')
 
@@ -139,35 +154,27 @@ if st.button('Run MapReduce Job'):
         input_csv = temp_file.name
     
     # Run the MapReduce job
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as temp_file:
-        temp_file.close()
-        output_csv = temp_file.name
-        subprocess.run(['python', 'mapreduce_job.py', '--input', input_csv, '--output', output_csv])
+    df = pd.read_csv(input_csv)
+    kpis = calculate_kpis(df)
 
-        # Check if the output file has data
-        try:
-            mapreduce_results = pd.read_csv(output_csv)
-            if mapreduce_results.empty:
-                st.error("The MapReduce job did not generate any results.")
-            else:
-                st.subheader('Essential KPI Values from MapReduce Job')
-                st.write(mapreduce_results)
+    # Display KPI values
+    if kpis.empty:
+        st.error("The MapReduce job did not generate any results.")
+    else:
+        st.subheader('Essential KPI Values from MapReduce Job')
+        st.write(kpis)
 
-                # Display KPI values
-                if 'PER' in mapreduce_results.columns:
-                    st.write(f"Average Player Efficiency Rating (PER): {mapreduce_results['PER'].iloc[0]:.2f}")
-                
-                if 'TS%' in mapreduce_results.columns:
-                    st.write(f"Average True Shooting Percentage (TS%): {mapreduce_results['TS%'].iloc[0]:.2f}")
-                
-                if 'eFG%' in mapreduce_results.columns:
-                    st.write(f"Average Effective Field Goal Percentage (eFG%): {mapreduce_results['eFG%'].iloc[0]:.2f}")
-                
-                if 'AST/TO' in mapreduce_results.columns:
-                    st.write(f"Average Assist-to-Turnover Ratio (AST/TO): {mapreduce_results['AST/TO'].iloc[0]:.2f}")
-                
-                if 'USG%' in mapreduce_results.columns:
-                    st.write(f"Average Usage Rate (USG%): {mapreduce_results['USG%'].iloc[0]:.2f}")
-
-        except pd.errors.EmptyDataError:
-            st.error("No data was returned from the MapReduce job.")
+        if 'PER' in kpis.columns:
+            st.write(f"Average Player Efficiency Rating (PER): {kpis['PER'].iloc[0]:.2f}")
+        
+        if 'TS%' in kpis.columns:
+            st.write(f"Average True Shooting Percentage (TS%): {kpis['TS%'].iloc[0]:.2f}")
+        
+        if 'eFG%' in kpis.columns:
+            st.write(f"Average Effective Field Goal Percentage (eFG%): {kpis['eFG%'].iloc[0]:.2f}")
+        
+        if 'AST/TO' in kpis.columns:
+            st.write(f"Average Assist-to-Turnover Ratio (AST/TO): {kpis['AST/TO'].iloc[0]:.2f}")
+        
+        if 'USG%' in kpis.columns:
+            st.write(f"Average Usage Rate (USG%): {kpis['USG%'].iloc[0]:.2f}")
