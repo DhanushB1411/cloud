@@ -1,0 +1,141 @@
+.github/workflows/actions.yaml
+
+
+name: My First GitHub Actions
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps: 
+
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+
+    - name: Run tests
+      run: |
+        python -m pytest addition.py
+
+
+A.
+src/addition.py
+
+def add(a, b):
+	return a + b
+
+def test_add():
+	assert add(1, 2) == 3
+	assert add(1, -1) == 0
+
+
+
+
+*********************************************************************************************************************
+
+
+2nd program commands
+
+$ git clone https://github.com/Mahi2708/sample-programs.git
+$ cd sample-programs/
+$ cat README.md
+$ nano README.md
+$ git add .
+$git commit -m  "committed2"
+$ git push origin master/main
+
+
+
+
+*********************************************************************************************************************
+Program 4
+
+docker --version
+docker images 
+docker pull redis
+docker images
+docker ps
+docker run --privileged redis
+docker ps
+docker exec -it <cid> sh
+docker stop <cid>
+docker rm <cid>
+docker rmi<iid>
+
+
+
+
+*********************************************************************************************************************
+
+Program 5:
+
+index.html -----------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sample Web App</title>
+</head>
+<body>
+    <h1>Welcome to the Sample Web Application!</h1>
+    <p>This is a basic HTML and JavaScript application running in a Docker container.</p>
+    <script>
+        console.log('Hello from JavaScript!');
+    </script>
+</body>
+</html>
+
+Dockerfile -------------------------------------------------------------
+
+# Use an official Nginx image as the base image
+FROM nginx:alpine
+
+# Copy the HTML file to the Nginx default directory
+COPY index.html /usr/share/nginx/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
+cd project path
+db  .
+docker images
+docker run -d -p 8080:80 sample-web
+docker ps
+docker-machine ip
+browser - ip:8080
+https://drive.google.com/drive/folders/1AfDRJo-sFQxXQIb8LtyLJUMzaTlBjQmm?usp=sharing
+
+
+*********************************************************************************************************************
+
+docker run busybox
+docker run redis
+docker ps
+docker kill number
+docker create redis
+docker start redis
+docker exec -i -t docker_id sh
+0
+
+https://drive.google.com/drive/folders/1Mlv6bHOMOlL5Pxihe0NaCjQpvbLynflp
+
+https://drive.google.com/drive/folders/1AfDRJo-sFQxXQIb8LtyLJUMzaTlBjQmm
