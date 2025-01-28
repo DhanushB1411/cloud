@@ -1,0 +1,37 @@
+docker pull nginx
+docker images
+docker container ls -a
+docker run -d -p 8080:80 nginx
+
+open  google 
+
+docker remove <container id>
+
+docker container ls -a
+
+docker rmi -f nginx
+
+docker pull busybox
+
+docker run busybox
+
+docker run busybox echo hello
+
+open docker and search hello
+
+
+/////////////////////////////5//////////////////////////////////////////////////
+
+Dockerfile
+FROM nginx AS alpine 
+
+COPY html /usr/share/nginx/html
+
+
+EXPOSE 80
+
+
+
+docker build -t  mns .
+ 
+docker run -d -p 8080:80 m
